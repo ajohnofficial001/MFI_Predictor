@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://api.newtonanalytics.com",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

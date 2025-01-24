@@ -1,0 +1,135 @@
+
+/* Global styles */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding-left: 30px;
+    background-color: #eef2f7;
+    color: #333;
+    overflow-x: hidden;
+}
+
+.App {
+    text-align: center;
+    width: 82vw;
+    margin: 30px auto;
+    padding: 30px;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    border-radius: 16px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.App:hover {
+    transform: scale(1.02);
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 25px;
+    color: #222;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+    
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background: #f9f9f9;
+    color: #333;
+}
+
+input:focus, select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 16px;
+    color: #fff;
+    background: linear-gradient(145deg, #007bff, #0056b3);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background: linear-gradient(145deg, #0056b3, #003f8a);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.results {
+    margin-top: 30px;
+    text-align: left;
+    background: #fff;
+    padding: 15px;
+    width: 50%;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.results h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.results p {
+    margin: 8px 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #444;
+}
+
+/* Additional sleek styles */
+input::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+button:active {
+    transform: translateY(2px);
+    box-shadow: none;
+}
+
+@media (max-width: 768px) {
+    .App {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    button {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+}
+.group-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}

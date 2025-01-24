@@ -3,7 +3,8 @@
 body {
     font-family: 'Inter', sans-serif;
     margin: 0;
-    padding-left: 30px;
+    padding-left: 6%;
+    padding-left: 6%;
     background-color: #eef2f7;
     color: #333;
     overflow-x: hidden;
@@ -12,8 +13,9 @@ body {
 .App {
     text-align: center;
     width: 82vw;
-    margin: 30px auto;
+    margin: 25px auto;
     padding: 30px;
+    padding-top: 8px;
     background: linear-gradient(145deg, #ffffff, #e6e6e6);
     border-radius: 16px;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
@@ -132,4 +134,5 @@ button:active {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    margin-right: 20px;
 }

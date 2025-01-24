@@ -90,7 +90,7 @@ function App() {
                     <p>Risk Free Rate: {results.riskFreeRate}%</p>
                     <p>Mutual Fund Beta: {results.beta}</p>
                     <p>Earnings (USD): ${results.futureValue}</p>
-                    <p>Total Balance (USD): ${results.futureValue + initialInvestment}</p>
+                    <p>Total Balance (USD): ${parseFloat(results.futureValue) + parseFloat(initialInvestment)}</p>
                 </div>
             )}
         </div>

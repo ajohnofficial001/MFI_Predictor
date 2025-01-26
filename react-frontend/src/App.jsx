@@ -2,18 +2,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
+import searchHistory from './searchHistory';
 
 function App() {
     const [initialInvestment, setInitialInvestment] = useState('');
     const [timeHorizon, setTimeHorizon] = useState('');
     const [mutualFund, setMutualFund] = useState('select');
     const [results, setResults] = useState(null);
+    const [searchHistory, setSearchHistory] = useState([]);
 
-    // Load search history from localStorage on mount
-    useEffect(() => {
-        const savedHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
-        setSearchHistory(savedHistory);
-    }, []);
+
 
     const handleCalculate = async () => {
         const ticker = mutualFund;
@@ -25,10 +23,17 @@ function App() {
             });
             setResults(response.data);
 
-            // Add to search history and update localStorage
-            const updatedHistory = [ticker, ...searchHistory].slice(0, 5); // Set limit to 5 entries
-            setSearchHistory(updatedHistory);
-            localStorage.setItem('searchHistory', JSON.stringify(updatedHistory));
+            // Add search to history
+            setSearchHistory([
+                ...searchHistory,
+                {
+                    ticker: mutualFund,
+                    initialInvestment: parseFloat(initialInvestment),
+                    timeHorizon: parseInt(timeHorizon),
+                    marketReturnRate: response.data.marketReturnRate,
+                    futureValue: response.data.futureValue
+                }
+            ]);
         } catch (error) {
             console.error('Error fetching calculation results', error);
         }

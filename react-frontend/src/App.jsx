@@ -9,6 +9,12 @@ function App() {
     const [mutualFund, setMutualFund] = useState('select');
     const [results, setResults] = useState(null);
 
+    // Load search history from localStorage on mount
+    useEffect(() => {
+        const savedHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+        setSearchHistory(savedHistory);
+    }, []);
+
     const handleCalculate = async () => {
         const ticker = mutualFund;
         try {
@@ -18,6 +24,11 @@ function App() {
                 timeHorizon: parseInt(timeHorizon)
             });
             setResults(response.data);
+
+            // Add to search history and update localStorage
+            const updatedHistory = [ticker, ...searchHistory].slice(0, 5); // Set limit to 5 entries
+            setSearchHistory(updatedHistory);
+            localStorage.setItem('searchHistory', JSON.stringify(updatedHistory));
         } catch (error) {
             console.error('Error fetching calculation results', error);
         }
@@ -93,6 +104,16 @@ function App() {
                     <p>Total Balance (USD): ${parseFloat(results.futureValue) + parseFloat(initialInvestment)}</p>
                 </div>
             )}
+
+            {/* Search History Section */}
+            <div className="search-history">
+                <h3> recently Searched Funds</h3>
+                <ul>
+                    {searchHistory.map((fund,index) => (
+                    <li key={index}>{fund}</li>
+                        ))}
+                </ul>
+            </div>
         </div>
     );
 }

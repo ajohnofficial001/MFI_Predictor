@@ -5,12 +5,16 @@ function SearchHistory({ history }) {
     if (!Array.isArray(history) || history.length === 0) {
         return <p>No search history available.</p>
     }
+
+    // Limit to the last 5 searches and change the order so latest appears first.
+    const recentHistory = history.slice(-5).reverse();
+
     return (
         <div className="search-history">
-            <h2>Search History</h2>
+            <h2>Recent Searches</h2>
             <ul>
-                {history.map((search, index) => (
-                    <li key={index}>
+                {recentHistory.map((search, index) => (
+                    <li key={index} style={{ marginBottom: '20px', padding: '10px', borderBottom: '1px solid #ddd'}}>
                         <strong>Mutual Fund:</strong> {search.ticker} <br />
                         <strong>Initial Investment:</strong> ${search.initialInvestment} <br />
                         <strong>Time Horizon:</strong> {search.timeHorizon} years <br />

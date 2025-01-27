@@ -1,8 +1,8 @@
 // App.js
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import './App.css';
-import searchHistory from './searchHistory';
+import SearchHistory from './SearchHistory';
 
 function App() {
     const [initialInvestment, setInitialInvestment] = useState('');
@@ -111,14 +111,7 @@ function App() {
             )}
 
             {/* Search History Section */}
-            <div className="search-history">
-                <h3> recently Searched Funds</h3>
-                <ul>
-                    {searchHistory.map((fund,index) => (
-                    <li key={index}>{fund}</li>
-                        ))}
-                </ul>
-            </div>
+            <SearchHistory history={searchHistory} />
         </div>
     );
 }

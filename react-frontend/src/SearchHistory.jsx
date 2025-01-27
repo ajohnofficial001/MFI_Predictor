@@ -1,7 +1,8 @@
-import React from 'react';
+import  'react';
+import PropTypes from 'prop-types';
 
 function SearchHistory({ history }) {
-    if (history.length === 0) {
+    if (!Array.isArray(history) || history.length === 0) {
         return <p>No search history available.</p>
     }
     return (
@@ -21,4 +22,17 @@ function SearchHistory({ history }) {
         </div>
     );
 }
+
+// Add proptypes for type-checking
+SearchHistory.propTypes = {
+    history: PropTypes.arrayOf(
+        PropTypes.shape({
+            ticker: PropTypes.string.isRequired,
+            initialInvestment: PropTypes.number.isRequired,
+            timeHorizon: PropTypes.number.isRequired,
+            marketReturnRate: PropTypes.number.isRequired,
+            futureValue: PropTypes.number.isRequired,
+            })
+        ),
+};
 export default SearchHistory;

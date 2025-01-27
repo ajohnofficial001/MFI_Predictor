@@ -11,6 +11,10 @@ function App() {
 
     const handleCalculate = async () => {
         const ticker = mutualFund;
+        if (!ticker || !initialInvestment || !timeHorizon) {
+            alert('Please fill out all fields');
+            return;
+        }
         try {
             const response = await axios.post('http://localhost:5000/api/mutualfunds/calculate', {
                 ticker,
@@ -29,7 +33,7 @@ function App() {
             <div className='group-entry'>
               <div className="form-group">
                   <label>Mutual Fund</label>
-                  <select value={mutualFund} onChange={(e) => setMutualFund(e.target.value)}>
+                  <select required="required" value={mutualFund} onChange={(e) => setMutualFund(e.target.value)}>
                     <option value="select">Select a mutual fund</option>
                     <option value="VSMPX">Vanguard Total Stock Market Index Fund;Institutional Plus</option>
                     <option value="FXAIX">Fidelity 500 Index Fund</option>
@@ -73,11 +77,11 @@ function App() {
               </div>
               <div className="form-group">
                   <label>Initial Investment Amount (USD)</label>
-                  <input type="number" value={initialInvestment} onChange={(e) => setInitialInvestment(e.target.value)} />
+                  <input required="required" type="number" value={initialInvestment} onChange={(e) => setInitialInvestment(e.target.value)} />
               </div>
               <div className="form-group">
                   <label>Time Horizon (in years)</label>
-                  <input type="number" value={timeHorizon} onChange={(e) => setTimeHorizon(e.target.value)} />
+                  <input required="required" type="number" value={timeHorizon} onChange={(e) => setTimeHorizon(e.target.value)} />
               </div>
             </div>
             <button onClick={handleCalculate}>Calculate</button>

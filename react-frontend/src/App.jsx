@@ -1,31 +1,107 @@
-// App.js
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import './App.css';
+import SearchHistory from './SearchHistory';
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+// Register Chart.js components
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Filler);
 
 function App() {
     const [initialInvestment, setInitialInvestment] = useState('');
     const [timeHorizon, setTimeHorizon] = useState('');
-    const [mutualFund, setMutualFund] = useState('select');
+    const [mutualFund, setMutualFund] = useState('select mutual fund');
     const [results, setResults] = useState(null);
+    const [searchHistory, setSearchHistory] = useState([]);
+    const [chartData, setChartData] = useState(null);
+
+      // Generate evenly distributed growth data for the chart
+    const generateEvenGrowthData = (initialInvestment, futureValue, years) => {
+      const totalBalance = parseFloat(initialInvestment) + parseFloat(futureValue); // Total balance
+      const yearlyIncrement = (totalBalance - initialInvestment) / years; // Increment per year
+      const growthData = [];
+
+      let balance = parseFloat(initialInvestment);
+      growthData.push({ year: 0, balance: balance.toFixed(2) }); // Year 0
+
+      for (let year = 1; year <= years; year++) {
+          balance += yearlyIncrement; // Add yearly increment
+          growthData.push({ year, balance: balance.toFixed(2) });
+      }
+
+      return growthData;
+    };
 
     const handleCalculate = async () => {
-        const ticker = mutualFund;
+      const ticker = mutualFund;
         if (!ticker || !initialInvestment || !timeHorizon) {
             alert('Please fill out all fields');
             return;
         }
-        try {
-            const response = await axios.post('http://localhost:5000/api/mutualfunds/calculate', {
-                ticker,
-                initialInvestment: parseFloat(initialInvestment),
-                timeHorizon: parseInt(timeHorizon)
-            });
-            setResults(response.data);
-        } catch (error) {
-            console.error('Error fetching calculation results', error);
-        }
-    };
+      try {
+          const response = await axios.post('http://localhost:5000/api/mutualfunds/calculate', {
+              ticker,
+              initialInvestment: parseFloat(initialInvestment),
+              timeHorizon: parseInt(timeHorizon),
+          });
+          setResults(response.data);
+  
+          // Validate market return rate
+          const yearlyRate = response.data.marketReturnRate / 100;
+          if (isNaN(yearlyRate) || yearlyRate < 0) {
+              console.error('Invalid market return rate:', response.data.marketReturnRate);
+              return;
+          }
+  
+          // Generate evenly distributed growth data
+          const growthData = generateEvenGrowthData(
+            parseFloat(initialInvestment),
+            response.data.futureValue,
+            parseInt(timeHorizon)
+          );
+          console.log('Growth Data:', growthData);
+  
+          // Set chart data
+          setChartData({
+              labels: growthData.map((d) => `Year ${d.year}`),
+              datasets: [
+                  {
+                      label: 'Investment Growth (USD)',
+                      data: growthData.map((d) => d.balance),
+                      fill: true,
+                      borderColor: 'rgba(75, 192, 192, 1)',
+                      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                      tension: 0.3, // Smooth curve
+                  },
+              ],
+          });
+  
+          // Add search to history
+          setSearchHistory([
+              ...searchHistory,
+              {
+                  ticker: mutualFund,
+                  initialInvestment: parseFloat(initialInvestment),
+                  timeHorizon: parseInt(timeHorizon),
+                  marketReturnRate: response.data.marketReturnRate,
+                  futureValue: response.data.futureValue,
+              },
+          ]);
+      } catch (error) {
+          console.error('Error fetching calculation results', error);
+      }
+  };
+  
 
     return (
         <div className="App">
@@ -85,18 +161,49 @@ function App() {
               </div>
             </div>
             <button onClick={handleCalculate}>Calculate</button>
-            {results && (
-                <div className="results">
-                    <h2>Result Summary</h2>
-                    <p>Initial Amount (USD): ${initialInvestment}</p>
-                    <p>Time Horizon (years): {timeHorizon}</p>
-                    <p>Return Rate: {results.marketReturnRate}%</p>
-                    <p>Risk Free Rate: {results.riskFreeRate}%</p>
-                    <p>Mutual Fund Beta: {results.beta}</p>
-                    <p>Earnings (USD): ${results.futureValue}</p>
-                    <p>Total Balance (USD): ${parseFloat(results.futureValue) + parseFloat(initialInvestment)}</p>
+            <div style={{display: 'flex', position: 'relative'}}>
+              {results && (
+                  <div className="results"> 
+                    {/* Calculation Results */}
+                    <div>
+                        <h2>Result Summary</h2>
+                        <p>Initial Amount (USD): ${initialInvestment}</p>
+                        <p>Time Horizon (years): {timeHorizon}</p>
+                        <p>Return Rate: {results.marketReturnRate}%</p>
+                        <p>Risk Free Rate: {results.riskFreeRate}%</p>
+                        <p>Mutual Fund Beta: {results.beta}</p>
+                        <p>Earnings (USD): ${results.futureValue}</p>
+                        <p>Total Balance (USD): ${(parseFloat(results.futureValue) + parseFloat(initialInvestment))}</p>
+                    </div>
+                  </div>
+              )}
+              {/* Investment Growth Chart */}
+              {chartData && (
+                <div className='chartRight'>
+                    <h3>Investment Growth</h3>
+                    <Line
+                      data={chartData}
+                      options={{
+                          responsive: true,
+                          maintainAspectRatio: true,
+                          scales: {
+                              y: {
+                                  beginAtZero: true, // Start Y-axis at 0
+                                  ticks: {
+                                      callback: function (value) {
+                                          return `$${value}`; //labels as currency
+                                      },
+                                  },
+                              },
+                          },
+                      }}
+                    />
                 </div>
-            )}
+              )}
+            </div>
+
+            {/* Search History Section */}
+            <SearchHistory history={searchHistory} />
         </div>
     );
 }

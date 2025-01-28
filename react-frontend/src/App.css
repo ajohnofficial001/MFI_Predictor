@@ -1,138 +1,159 @@
-
 /* Global styles */
 body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding-left: 6%;
-    padding-left: 6%;
-    background-color: #eef2f7;
-    color: #333;
-    overflow-x: hidden;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding-left: 6%;
+  padding-left: 6%;
+  background-color: #eef2f7;
+  color: #333;
+  overflow-x: hidden;
 }
 
 .App {
-    text-align: center;
-    width: 82vw;
-    margin: 25px auto;
-    padding: 30px;
-    padding-top: 8px;
-    background: linear-gradient(145deg, #ffffff, #e6e6e6);
-    border-radius: 16px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
+  text-align: center;
+  width: 82vw;
+  margin: 25px auto;
+  padding: 30px;
+  padding-top: 8px;
+  background: linear-gradient(145deg, #ffffff, #e6e6e6);
+  border-radius: 16px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
 }
 
 .App:hover {
-    transform: scale(1.02);
+  transform: scale(1.02);
 }
 
 h1 {
-    font-size: 28px;
-    margin-bottom: 25px;
-    color: #222;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #222;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .form-group {
-    margin-bottom: 20px;
-    text-align: left;
-    
+  margin-bottom: 20px;
+  text-align: left;
 }
 
 label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #555;
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #555;
 }
 
-input, select {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    background: #f9f9f9;
-    color: #333;
+input,
+select {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background: #f9f9f9;
+  color: #333;
 }
 
-input:focus, select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+input:focus,
+select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
 }
 
 button {
-    padding: 12px 20px;
-    font-size: 16px;
-    color: #fff;
-    background: linear-gradient(145deg, #007bff, #0056b3);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s, box-shadow 0.3s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 12px 20px;
+  font-size: 16px;
+  color: #fff;
+  background: linear-gradient(145deg, #007bff, #0056b3);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
-    background: linear-gradient(145deg, #0056b3, #003f8a);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(145deg, #0056b3, #003f8a);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* Table container */
 .results {
-    margin-top: 30px;
-    text-align: left;
-    background: #fff;
-    padding: 15px;
-    width: 50%;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
 }
 
-.results h2 {
-    font-size: 22px;
-    margin-bottom: 15px;
-    color: #333;
+/* Table header */
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-family: Arial, sans-serif;
 }
 
-.results p {
-    margin: 8px 0;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #444;
+.result-table th,
+.result-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.result-table th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.result-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Table data cells */
+.result-table td {
+  color: #333;
+}
+
+/* Fund labels */
+.result-table td:first-child {
+  font-weight: bold;
+  color: #007bff;
 }
 
 /* Additional sleek styles */
 input::placeholder {
-    color: #aaa;
-    font-style: italic;
+  color: #aaa;
+  font-style: italic;
 }
 
 button:active {
-    transform: translateY(2px);
-    box-shadow: none;
+  transform: translateY(2px);
+  box-shadow: none;
 }
 
 @media (max-width: 768px) {
-    .App {
-        padding: 20px;
-    }
+  .App {
+    padding: 20px;
+  }
 
-    h1 {
-        font-size: 24px;
-    }
+  h1 {
+    font-size: 24px;
+  }
 
-    button {
-        padding: 10px 15px;
-        font-size: 14px;
-    }
+  button {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
 }
 .group-entry {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    margin-right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-right: 20px;
 }

@@ -86,8 +86,9 @@ button:hover {
     text-align: left;
     background: #fff;
     padding: 15px;
-    width: 50%;
+    width: 40%;
     border-radius: 12px;
+    position: relative;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -135,4 +136,8 @@ button:active {
     align-items: center;
     margin-bottom: 10px;
     margin-right: 20px;
+}
+.chartRight {
+    width: 60%;
+    margin-left: 20px;
 }

@@ -15,7 +15,7 @@ async function calculateFutureValue(req, res) {
     }
 
     try {
-        const riskFreeRate = 0.0457; // Example hardcoded value
+        const riskFreeRate = 0.0463; //US Treasury value
         const marketReturnRate = await mutualFundService.getMarketReturnRate();
         console.log(ticker);
         //const beta = -0.6393704983386446;

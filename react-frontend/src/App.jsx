@@ -71,20 +71,48 @@ function App() {
           );
           console.log('Growth Data:', growthData);
   
-          // Set chart data
-          setChartData({
-              labels: growthData.map((d) => `Year ${d.year}`),
-              datasets: [
-                  {
-                      label: 'Investment Growth (USD)',
-                      data: growthData.map((d) => d.balance),
-                      fill: true,
-                      borderColor: 'rgba(75, 192, 192, 1)',
-                      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                      tension: 0.3, // Smooth curve
-                  },
-              ],
-          });
+          // // Set chart data
+          // setChartData({
+          //     labels: growthData.map((d) => `Year ${d.year}`),
+          //     datasets: [
+          //         {
+          //             label: 'Investment Growth (USD)',
+          //             data: growthData.map((d) => d.balance),
+          //             fill: true,
+          //             borderColor: 'rgba(75, 192, 192, 1)',
+          //             backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          //             tension: 0.3, // Smooth curve
+          //         },
+          //     ],
+          // });
+
+        const generateChartData = () => {
+        if (!results) return {};
+
+        const years = [];
+        const balances = [];
+        const initial = parseFloat(initialInvestment);
+        const rate = results.marketReturnRate / 100;
+
+        for (let i = 0; i <= timeHorizon; i++) {
+            years.push(i);
+            const futureValue = initial * Math.pow(1 + rate, i);
+            balances.push(futureValue);
+        }
+
+        return {
+            labels: years,
+            datasets: [
+                {
+                    label: 'Investment Value Over Time',
+                    data: balances,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    fill: false,
+                    tension: 0.1
+                }
+            ]
+        };
+    };
   
           // Add search to history
           setSearchHistory([
@@ -200,6 +228,14 @@ function App() {
                     />
                 </div>
               )}
+
+               {results && (
+                <div className="chart-container">
+                    <h3>Portfolio Overview</h3>
+                    <Line data={generateChartData()} />
+                </div>
+            )}
+              
             </div>
 
             {/* Search History Section */}
@@ -207,6 +243,7 @@ function App() {
         </div>
     );
 }
+
 
 export default App;
 

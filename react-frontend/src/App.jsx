@@ -12,7 +12,7 @@ const defaultFundFormVals = {
 };
 
 function App() {
-  const [fundFormVals, setFundFormVals] = useState([defaultFundFormVals, defaultFundFormVals]);
+  const [fundFormVals, setFundFormVals] = useState([defaultFundFormVals]);
   const [results, setResults] = useState(null);
   console.log(results);
 
@@ -57,9 +57,14 @@ function App() {
   return (
     <div className="App">
       <h1>Mutual Fund Calculator</h1>
-      <MutualFundSelector fundFormVals={fundFormVals} setFundFormVals={setFundFormVals} index={0} />
-      <MutualFundSelector fundFormVals={fundFormVals} setFundFormVals={setFundFormVals} index={1} />
-      <button onClick={() => handleCalculate()}>Calculate</button>
+      {fundFormVals.map((form, index) => (
+        <MutualFundSelector key={index} fundFormVals={fundFormVals} setFundFormVals={setFundFormVals} index={index} />
+      ))}
+      <div style={{display: "flex", gap: "1rem", justifyContent: "center"}}>
+        <button onClick={() => setFundFormVals([...fundFormVals, defaultFundFormVals])}>Add fund</button>
+        <button onClick={() => handleCalculate()}>Calculate</button>
+      </div>
+
       {results && results.length > 0 && (
         <div className="results">
           <h2>Result Summary</h2>

@@ -92,9 +92,7 @@ const MutualFundSelector = ({fundFormVals, setFundFormVals, index}) => {
         />
       </div>
       <div className="form-group">
-        <button  onClick={handleDeleteSelector}>
-          Delete
-        </button>
+        <button onClick={handleDeleteSelector}>Delete</button>
       </div>
     </div>
   );

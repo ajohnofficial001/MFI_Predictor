@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import {useState} from "react";
 import axios from "axios";
 import "./App.css";
 import MutualFundSelector from "./MutualFundSelector";
@@ -14,7 +14,7 @@ import {
   Legend,
   Filler,
 } from "chart.js";
-import { Line } from "react-chartjs-2";
+import {Line} from "react-chartjs-2";
 
 // Register Chart.js components
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Filler);
@@ -39,21 +39,21 @@ function App() {
     const growthData = [];
 
     let balance = parseFloat(initialInvestment);
-    growthData.push({ year: 0, balance: balance.toFixed(2) });
+    growthData.push({year: 0, balance: balance.toFixed(2)});
 
     for (let year = 1; year <= years; year++) {
       balance += yearlyIncrement;
-      growthData.push({ year, balance: balance.toFixed(2) });
+      growthData.push({year, balance: balance.toFixed(2)});
     }
 
     return growthData;
   };
 
   const handleCalculate = async () => {
-    const requests = fundFormVals.map(async (form) => {
-      const { initialInvestment, timeHorizon, mutualFund: ticker } = form;
+    const requests = fundFormVals.map(async form => {
+      const {initialInvestment, timeHorizon, mutualFund: ticker} = form;
 
-      if (!ticker && !initialInvestment && !timeHorizon)return null;
+      if (!ticker && !initialInvestment && !timeHorizon) return null;
       if (!ticker || !initialInvestment || !timeHorizon) {
         alert("Please fill out all fields");
         return null;
@@ -72,10 +72,10 @@ function App() {
         const growthData = generateEvenGrowthData(
           parseFloat(initialInvestment),
           response.data.futureValue,
-          parseInt(timeHorizon)
+          parseInt(timeHorizon),
         );
 
-        return { ...response.data, growthData };
+        return {...response.data, growthData};
       } catch (error) {
         console.error("Error fetching calculation results", error);
         return null;
@@ -84,18 +84,18 @@ function App() {
 
     try {
       const results = await Promise.all(requests);
-      const filteredResults = results.filter((result) => result !== null);
+      const filteredResults = results.filter(result => result !== null);
 
       setResults(filteredResults);
 
       // Prepare chart data for the first fund as an example
       if (filteredResults.length > 0) {
         setChartData({
-          labels: filteredResults[0].growthData.map((d) => `Year ${d.year}`),
+          labels: filteredResults[0].growthData.map(d => `Year ${d.year}`),
           datasets: [
             {
               label: "Investment Growth (USD)",
-              data: filteredResults[0].growthData.map((d) => d.balance),
+              data: filteredResults[0].growthData.map(d => d.balance),
               fill: true,
               borderColor: "rgba(75, 192, 192, 1)",
               backgroundColor: "rgba(75, 192, 192, 0.2)",
@@ -108,7 +108,7 @@ function App() {
       // Save search history
       setSearchHistory([
         ...searchHistory,
-        ...filteredResults.map((result) => ({
+        ...filteredResults.map(result => ({
           ticker: result.mutualFundName,
           initialInvestment: result.initialInvestment,
           timeHorizon: result.timeHorizon,
@@ -129,7 +129,7 @@ function App() {
         <MutualFundSelector key={index} fundFormVals={fundFormVals} setFundFormVals={setFundFormVals} index={index} />
       ))}
 
-      <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+      <div style={{display: "flex", gap: "1rem", justifyContent: "center"}}>
         <button onClick={() => setFundFormVals([...fundFormVals, defaultFundFormVals])}>Add Fund</button>
         <button onClick={handleCalculate}>Calculate</button>
       </div>

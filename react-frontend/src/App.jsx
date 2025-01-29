@@ -30,7 +30,6 @@ function App() {
   const [results, setResults] = useState(null);
   const [searchHistory, setSearchHistory] = useState([]);
   const [chartData, setChartData] = useState(null);
-  console.log(results);
 
   // Generate evenly distributed growth data for the chart
   const generateEvenGrowthData = (initialInvestment, futureValue, years) => {
@@ -88,20 +87,28 @@ function App() {
 
       setResults(filteredResults);
 
-      // Prepare chart data for the first fund as an example
       if (filteredResults.length > 0) {
+        // Get all unique years across all funds
+        const allYears = Array.from(new Set(filteredResults.flatMap(fund => fund.growthData.map(d => d.year)))).sort(
+          (a, b) => a - b,
+        ); // Sort in ascending order
+
         setChartData({
-          labels: filteredResults[0].growthData.map(d => `Year ${d.year}`),
-          datasets: [
-            {
-              label: "Investment Growth (USD)",
-              data: filteredResults[0].growthData.map(d => d.balance),
-              fill: true,
-              borderColor: "rgba(75, 192, 192, 1)",
-              backgroundColor: "rgba(75, 192, 192, 0.2)",
+          labels: allYears.map(year => `Year ${year}`), // X-axis labels
+
+          datasets: filteredResults.map((fund, index) => {
+            // Create a map of year -> balance for the current fund
+            const yearBalanceMap = new Map(fund.growthData.map(d => [d.year, d.balance]));
+
+            return {
+              label: `${fund.mutualFundName} Growth (USD)`,
+              data: allYears.map(year => yearBalanceMap.get(year) || null), // Fill gaps with null
+              fill: false,
+              borderColor: `hsl(${index * 60}, 70%, 50%)`, // Unique colors
+              backgroundColor: `hsl(${index * 60}, 70%, 80%)`,
               tension: 0.3,
-            },
-          ],
+            };
+          }),
         });
       }
 
@@ -153,7 +160,7 @@ function App() {
             <tbody>
               {results.map((result, index) => (
                 <tr key={index}>
-                  <td>Fund {result.mutualFundName}</td>
+                  <td>{result.mutualFundName}</td>
                   <td>${result.initialInvestment}</td>
                   <td>{result.timeHorizon}</td>
                   <td>{result.marketReturnRate}%</td>

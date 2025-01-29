@@ -1,9 +1,23 @@
 /* eslint-disable react/prop-types */
-// App.js
-import {useState} from "react";
+import { useState } from "react";
 import axios from "axios";
 import "./App.css";
 import MutualFundSelector from "./MutualFundSelector";
+import SearchHistory from "./SearchHistory";
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+
+// Register Chart.js components
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Filler);
 
 const defaultFundFormVals = {
   initialInvestment: "",
@@ -14,18 +28,35 @@ const defaultFundFormVals = {
 function App() {
   const [fundFormVals, setFundFormVals] = useState([defaultFundFormVals]);
   const [results, setResults] = useState(null);
+  const [searchHistory, setSearchHistory] = useState([]);
+  const [chartData, setChartData] = useState(null);
   console.log(results);
 
-  const handleCalculate = async () => {
-    // Map over fundFormVals to create an array of promises
-    const requests = fundFormVals.map(async form => {
-      const {initialInvestment, timeHorizon, mutualFund: ticker} = form;
+  // Generate evenly distributed growth data for the chart
+  const generateEvenGrowthData = (initialInvestment, futureValue, years) => {
+    const totalBalance = parseFloat(initialInvestment) + parseFloat(futureValue);
+    const yearlyIncrement = (totalBalance - initialInvestment) / years;
+    const growthData = [];
 
-      // Skip the calculation if any required field is missing
-      if (!ticker && !initialInvestment && !timeHorizon) return null;
+    let balance = parseFloat(initialInvestment);
+    growthData.push({ year: 0, balance: balance.toFixed(2) });
+
+    for (let year = 1; year <= years; year++) {
+      balance += yearlyIncrement;
+      growthData.push({ year, balance: balance.toFixed(2) });
+    }
+
+    return growthData;
+  };
+
+  const handleCalculate = async () => {
+    const requests = fundFormVals.map(async (form) => {
+      const { initialInvestment, timeHorizon, mutualFund: ticker } = form;
+
+      if (!ticker && !initialInvestment && !timeHorizon)return null;
       if (!ticker || !initialInvestment || !timeHorizon) {
         alert("Please fill out all fields");
-        return null; // Skip this request
+        return null;
       }
 
       try {
@@ -34,21 +65,57 @@ function App() {
           initialInvestment: parseFloat(initialInvestment),
           timeHorizon: parseInt(timeHorizon),
         });
-        return response.data; // Return response data if successful
+
+        if (!response.data) return null;
+
+        // Generate growth data for charts
+        const growthData = generateEvenGrowthData(
+          parseFloat(initialInvestment),
+          response.data.futureValue,
+          parseInt(timeHorizon)
+        );
+
+        return { ...response.data, growthData };
       } catch (error) {
         console.error("Error fetching calculation results", error);
-        return null; // Return null in case of an error
+        return null;
       }
     });
 
     try {
-      // Wait for all the requests to complete in parallel
       const results = await Promise.all(requests);
+      const filteredResults = results.filter((result) => result !== null);
 
-      // Filter out null results (in case of missing fields or errors)
-      const filteredResults = results.filter(result => result !== null);
+      setResults(filteredResults);
 
-      setResults(filteredResults); // Set the filtered results
+      // Prepare chart data for the first fund as an example
+      if (filteredResults.length > 0) {
+        setChartData({
+          labels: filteredResults[0].growthData.map((d) => `Year ${d.year}`),
+          datasets: [
+            {
+              label: "Investment Growth (USD)",
+              data: filteredResults[0].growthData.map((d) => d.balance),
+              fill: true,
+              borderColor: "rgba(75, 192, 192, 1)",
+              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              tension: 0.3,
+            },
+          ],
+        });
+      }
+
+      // Save search history
+      setSearchHistory([
+        ...searchHistory,
+        ...filteredResults.map((result) => ({
+          ticker: result.mutualFundName,
+          initialInvestment: result.initialInvestment,
+          timeHorizon: result.timeHorizon,
+          marketReturnRate: result.marketReturnRate,
+          futureValue: result.futureValue,
+        })),
+      ]);
     } catch (error) {
       console.error("Error during Promise.all execution", error);
     }
@@ -57,12 +124,14 @@ function App() {
   return (
     <div className="App">
       <h1>Mutual Fund Calculator</h1>
+
       {fundFormVals.map((form, index) => (
         <MutualFundSelector key={index} fundFormVals={fundFormVals} setFundFormVals={setFundFormVals} index={index} />
       ))}
-      <div style={{display: "flex", gap: "1rem", justifyContent: "center"}}>
-        <button onClick={() => setFundFormVals([...fundFormVals, defaultFundFormVals])}>Add fund</button>
-        <button onClick={() => handleCalculate()}>Calculate</button>
+
+      <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+        <button onClick={() => setFundFormVals([...fundFormVals, defaultFundFormVals])}>Add Fund</button>
+        <button onClick={handleCalculate}>Calculate</button>
       </div>
 
       {results && results.length > 0 && (
@@ -98,6 +167,15 @@ function App() {
           </table>
         </div>
       )}
+
+      {chartData && (
+        <div className="chart-container">
+          <h2>Investment Growth Over Time</h2>
+          <Line data={chartData} />
+        </div>
+      )}
+
+      <SearchHistory history={searchHistory} />
     </div>
   );
 }

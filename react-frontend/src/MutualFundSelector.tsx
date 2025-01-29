@@ -49,6 +49,13 @@ const MutualFundSelector = ({fundFormVals, setFundFormVals, index}) => {
     setFundFormVals(updatedFormVals);
   };
 
+  const handleDeleteSelector = () => {
+    // Remove the specific index from the fundFormVals array
+    const updatedFormVals = [...fundFormVals];
+    updatedFormVals.splice(index, 1);
+    setFundFormVals(updatedFormVals);
+  };
+
   return (
     <div className="group-entry">
       <div className="form-group">
@@ -83,6 +90,11 @@ const MutualFundSelector = ({fundFormVals, setFundFormVals, index}) => {
           value={fundFormVals[index].timeHorizon}
           onChange={e => handleInputChange("timeHorizon", e.target.value)}
         />
+      </div>
+      <div className="form-group">
+        <button  onClick={handleDeleteSelector}>
+          Delete
+        </button>
       </div>
     </div>
   );

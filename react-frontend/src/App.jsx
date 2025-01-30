@@ -59,7 +59,7 @@ function App() {
       }
 
       try {
-        const response = await axios.post("https://mfi-predictor.vercel.app/api/mutualfunds/calculate", {
+        const response = await axios.post("https://mfi-predictor-backend.vercel.app/api/mutualfunds/calculate", {
           ticker,
           initialInvestment: parseFloat(initialInvestment),
           timeHorizon: parseInt(timeHorizon),
